@@ -42,7 +42,7 @@ npx @eove/dev-tools --help
 
 ## Commands
 
-todo
+- `changelog`: extracts changes from a changelog file
 
 ## License
 

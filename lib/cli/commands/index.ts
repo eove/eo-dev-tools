@@ -1,1 +1,1 @@
-export * from './sayHello';
+export * from './changelog';
