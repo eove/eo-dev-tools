@@ -76,6 +76,31 @@ describe('Changelog parser', () => {
     expect(changelog).toEqual(expected);
   });
 
+  it('should return changes for provided version only though some versions components have multiple digits', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 1.1.12',
+      '',
+      'Something in second version',
+      '',
+      '## 1.1.11',
+      '',
+      '### Added',
+      '',
+      'Something in first version',
+    ].join('\n');
+
+    const changelog = extractChangelog(content, '1.1.12', {
+      omitTitle: true,
+    });
+
+    const expected = ['Something in second version'].join('\n');
+    expect(changelog).toEqual(expected);
+  });
+
   it('should return changes for a prefixed version by v', () => {
     const content = [
       '# Changelog',

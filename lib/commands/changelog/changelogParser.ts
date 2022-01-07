@@ -26,7 +26,7 @@ export function extractChangelog(
 }
 
 function getVersionToUse(version: string) {
-  const regex = /v?(\d\.\d\.\d)(-.*)?/;
+  const regex = /v?(\d+\.\d+\.\d+)(-.*)?/;
   const matches = regex.exec(version);
   if (!matches) {
     return version;
