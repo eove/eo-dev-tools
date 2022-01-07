@@ -1,4 +1,13 @@
-export function extractChangelog(content: string, version: string): string {
+export interface ExtractChangelogOptions {
+  omitTitle: boolean;
+}
+
+export function extractChangelog(
+  content: string,
+  version: string,
+  options: ExtractChangelogOptions
+): string {
+  const { omitTitle } = options;
   const versionToUse = getVersionToUse(version);
   const allLines = content.split('\n');
   const relevantLines = [];
@@ -6,6 +15,9 @@ export function extractChangelog(content: string, version: string): string {
   for (const line of allLines) {
     if (line.startsWith('## ')) {
       parsingRelevantLines = line.includes(versionToUse);
+      if (!omitTitle && parsingRelevantLines) {
+        relevantLines.push(line);
+      }
     } else if (parsingRelevantLines) {
       relevantLines.push(line);
     }

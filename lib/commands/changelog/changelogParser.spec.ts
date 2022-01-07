@@ -2,7 +2,7 @@ import { extractChangelog } from './changelogParser';
 
 describe('Changelog parser', () => {
   it('should return nothing if changelog empty', () => {
-    const changelog = extractChangelog('', '1.0.0');
+    const changelog = extractChangelog('', '1.0.0', { omitTitle: false });
 
     expect(changelog).toEqual('');
   });
@@ -20,9 +20,26 @@ describe('Changelog parser', () => {
       '- something',
     ].join('\n');
 
-    const changelog = extractChangelog(content, '1.0.0');
+    const changelog = extractChangelog(content, '1.0.0', { omitTitle: true });
 
     const expected = ['### Added', '', '- something'].join('\n');
+    expect(changelog).toEqual(expected);
+  });
+
+  it('should return changes with title when not omitted', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 1.0.0 - 2022-01-01',
+      '',
+      'Something',
+    ].join('\n');
+
+    const changelog = extractChangelog(content, '1.0.0', { omitTitle: false });
+
+    const expected = ['## 1.0.0 - 2022-01-01', '', 'Something'].join('\n');
     expect(changelog).toEqual(expected);
   });
 
@@ -51,7 +68,7 @@ describe('Changelog parser', () => {
       '- something in first version',
     ].join('\n');
 
-    const changelog = extractChangelog(content, '2.0.0');
+    const changelog = extractChangelog(content, '2.0.0', { omitTitle: true });
 
     const expected = ['### Added', '', '- something in second version'].join(
       '\n'
@@ -70,7 +87,7 @@ describe('Changelog parser', () => {
       'Something',
     ].join('\n');
 
-    const changelog = extractChangelog(content, 'v1.0.0');
+    const changelog = extractChangelog(content, 'v1.0.0', { omitTitle: true });
 
     expect(changelog).toEqual('Something');
   });
@@ -86,7 +103,9 @@ describe('Changelog parser', () => {
       'Something',
     ].join('\n');
 
-    const changelog = extractChangelog(content, '1.0.0-dev.3');
+    const changelog = extractChangelog(content, '1.0.0-dev.3', {
+      omitTitle: true,
+    });
 
     expect(changelog).toEqual('Something');
   });

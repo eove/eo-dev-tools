@@ -20,6 +20,11 @@ export const changelog: CommandModule<any, Options> = {
         description: 'Changelog file path',
         default: './CHANGELOG.md',
       },
+      omitTitle: {
+        type: 'boolean',
+        description: 'Omit title usually containing version and release date',
+        default: false,
+      },
     });
     return yargs;
   },

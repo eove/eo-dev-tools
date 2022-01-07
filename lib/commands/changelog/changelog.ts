@@ -12,6 +12,7 @@ interface Creation {
 export interface ChangelogOptions {
   changesVersion: string;
   file: string;
+  omitTitle: boolean;
 }
 
 export function createChangelog(
@@ -19,11 +20,11 @@ export function createChangelog(
 ): (options: ChangelogOptions) => Promise<void> {
   const { logger, console } = creation;
   return async (options: ChangelogOptions) => {
-    const { file: filePath, changesVersion: version } = options;
+    const { file: filePath, changesVersion: version, omitTitle } = options;
     logger.debug(`Extracting version ${version} changelog from ${filePath}`);
     await ensureChangelogExists(filePath);
     const content = await readFile(filePath, { encoding: 'utf8' });
-    const result = extractChangelog(content, version);
+    const result = extractChangelog(content, version, { omitTitle });
     console.log(result);
   };
 }

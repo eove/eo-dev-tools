@@ -19,9 +19,27 @@ describe('Changelog', () => {
     await command({
       file: joinPath(__dirname, 'tests/nominal.md'),
       changesVersion: '2.0.0',
+      omitTitle: true,
     });
 
     const expected = ['### Added', '', '- something in 2.0.0'].join('\n');
+    expect(console.log).toHaveBeenCalledWith(expected);
+  });
+
+  it('should print the changelog with title when needed', async () => {
+    await command({
+      file: joinPath(__dirname, 'tests/nominal.md'),
+      changesVersion: '2.0.0',
+      omitTitle: false,
+    });
+
+    const expected = [
+      '## 2.0.0 - 2022-01-02',
+      '',
+      '### Added',
+      '',
+      '- something in 2.0.0',
+    ].join('\n');
     expect(console.log).toHaveBeenCalledWith(expected);
   });
 
@@ -29,6 +47,7 @@ describe('Changelog', () => {
     await command({
       file: joinPath(__dirname, 'tests/nominal.md'),
       changesVersion: '2.1.1',
+      omitTitle: true,
     });
 
     const expected = ['### Added', '', '- something in 2.1.1'].join('\n');
@@ -41,6 +60,7 @@ describe('Changelog', () => {
     const act = command({
       file,
       changesVersion: '2.0.0',
+      omitTitle: true,
     });
 
     await expect(act).rejects.toThrow(
