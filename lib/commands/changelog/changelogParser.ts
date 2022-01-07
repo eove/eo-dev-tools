@@ -14,7 +14,8 @@ export function extractChangelog(
   let parsingRelevantLines = false;
   for (const line of allLines) {
     if (line.startsWith('## ')) {
-      parsingRelevantLines = line.includes(versionToUse);
+      const versionMaybe = getVersionMaybe(line);
+      parsingRelevantLines = versionMaybe === versionToUse;
       if (!omitTitle && parsingRelevantLines) {
         relevantLines.push(line);
       }
@@ -23,6 +24,15 @@ export function extractChangelog(
     }
   }
   return relevantLines.join('\n').trim();
+}
+
+function getVersionMaybe(line: string) {
+  const regex = /(\d+\.\d+\.\d+)/;
+  const matches = regex.exec(line);
+  if (!matches) {
+    return null;
+  }
+  return matches[1];
 }
 
 function getVersionToUse(version: string) {

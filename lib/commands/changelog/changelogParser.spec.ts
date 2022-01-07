@@ -101,6 +101,24 @@ describe('Changelog parser', () => {
     expect(changelog).toEqual(expected);
   });
 
+  it('should return changes for provided version only though some versions start identically', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 1.1.12',
+      '',
+      'Something',
+    ].join('\n');
+
+    const changelog = extractChangelog(content, '1.1.1', {
+      omitTitle: true,
+    });
+
+    expect(changelog).toEqual('');
+  });
+
   it('should return changes for a prefixed version by v', () => {
     const content = [
       '# Changelog',
