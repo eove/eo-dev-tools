@@ -44,6 +44,16 @@ npx @eove/dev-tools --help
 
 - `changelog`: extracts changes from a changelog file
 
+## Examples
+
+### Changelog
+
+Extracts the changelog for provided version:
+
+```
+npx @eove/dev-tools changelog --file ./CHANGELOG.md 1.3.4
+```
+
 ## License
 
 [MIT](LICENSE)
