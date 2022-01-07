@@ -1,0 +1,11 @@
+# eove default ignore list
+__mocks__
+.*
+*.spec.js
+test
+coverage
+
+# specific to this project
+/lib
+tsconfig*
+tslint.json
