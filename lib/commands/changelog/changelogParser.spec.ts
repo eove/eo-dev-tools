@@ -135,6 +135,24 @@ describe('Changelog parser', () => {
     expect(changelog).toEqual('Something');
   });
 
+  it('should return changes for a version though title contains multiple versions', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 1.0.0, 1.0.1',
+      '',
+      'Something',
+    ].join('\n');
+
+    const changelog1 = extractChangelog(content, '1.0.0', { omitTitle: true });
+    const changelog2 = extractChangelog(content, '1.0.1', { omitTitle: true });
+
+    expect(changelog1).toEqual('Something');
+    expect(changelog2).toEqual('Something');
+  });
+
   it('should return changes for a prerelease version', () => {
     const content = [
       '# Changelog',
