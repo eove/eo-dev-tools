@@ -1,4 +1,5 @@
 import { extractChangelog } from './changelogParser';
+import { VersionName } from './versionName';
 
 describe('Changelog parser', () => {
   it('should return nothing if changelog empty', () => {
@@ -94,6 +95,56 @@ describe('Changelog parser', () => {
     ].join('\n');
 
     const changelog = extractChangelog(content, '1.1.12', {
+      omitTitle: true,
+    });
+
+    const expected = ['Something in second version'].join('\n');
+    expect(changelog).toEqual(expected);
+  });
+
+  it('should return changes for latest version when provided version is latest', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 2.0.0',
+      '',
+      'Something in second version',
+      '',
+      '## 1.0.0',
+      '',
+      '### Added',
+      '',
+      'Something in first version',
+    ].join('\n');
+
+    const changelog = extractChangelog(content, VersionName.latest, {
+      omitTitle: true,
+    });
+
+    const expected = ['Something in second version'].join('\n');
+    expect(changelog).toEqual(expected);
+  });
+
+  it('won\'t return changes when title includes ambiguous latest word when provided version is latest', () => {
+    const content = [
+      '# Changelog',
+      '',
+      'All notable changes.',
+      '',
+      '## 2.0.0',
+      '',
+      'Something in second version',
+      '',
+      '## 1.0.0 is not the latest version',
+      '',
+      '### Added',
+      '',
+      'Something in first version',
+    ].join('\n');
+
+    const changelog = extractChangelog(content, VersionName.latest, {
       omitTitle: true,
     });
 

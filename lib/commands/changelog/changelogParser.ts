@@ -1,3 +1,5 @@
+import { VersionName } from './versionName';
+
 export interface ExtractChangelogOptions {
   omitTitle: boolean;
 }
@@ -11,11 +13,16 @@ export function extractChangelog(
   const versionToUse = getVersionToUse(version);
   const allLines = content.split('\n');
   const relevantLines = [];
+  let changesIndex;
   let parsingRelevantLines = false;
   for (const line of allLines) {
     if (line.startsWith('## ')) {
-      const versionsInLine = getVersionsFromLine(line);
-      parsingRelevantLines = versionsInLine.includes(versionToUse);
+      changesIndex = changesIndex != undefined ? changesIndex + 1 : 0;
+      parsingRelevantLines = isTitleRelevantForVersion(
+        line,
+        versionToUse,
+        changesIndex
+      );
       if (!omitTitle && parsingRelevantLines) {
         relevantLines.push(line);
       }
@@ -24,6 +31,18 @@ export function extractChangelog(
     }
   }
   return relevantLines.join('\n').trim();
+}
+
+function isTitleRelevantForVersion(
+  line: string,
+  version: string,
+  changesIndex: number
+): boolean {
+  const versionsInLine = getVersionsFromLine(line);
+  return (
+    versionsInLine.includes(version) ||
+    (version === VersionName.latest && changesIndex === 0)
+  );
 }
 
 function getVersionsFromLine(line: string): string[] {
