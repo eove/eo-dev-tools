@@ -127,7 +127,7 @@ describe('Changelog parser', () => {
     expect(changelog).toEqual(expected);
   });
 
-  it('won\'t return changes when title includes ambiguous latest word when provided version is latest', () => {
+  it("won't return changes when title includes ambiguous latest word when provided version is latest", () => {
     const content = [
       '# Changelog',
       '',
@@ -192,7 +192,7 @@ describe('Changelog parser', () => {
       '',
       'All notable changes.',
       '',
-      '## 1.0.0, 1.0.1',
+      '## 1.0.0, 1.0.1 2022-01-01',
       '',
       'Something',
     ].join('\n');
@@ -204,21 +204,85 @@ describe('Changelog parser', () => {
     expect(changelog2).toEqual('Something');
   });
 
-  it('should return changes for a prerelease version', () => {
-    const content = [
-      '# Changelog',
-      '',
-      'All notable changes.',
-      '',
-      '## 1.0.0',
-      '',
-      'Something',
-    ].join('\n');
+  describe('when provided version is a prerelease one', () => {
+    it('should return changes from corresponding release version when prerelease cannot be found', () => {
+      const content = [
+        '# Changelog',
+        '',
+        'All notable changes.',
+        '',
+        '## 1.0.0 2022-01-01',
+        '',
+        'Something',
+      ].join('\n');
 
-    const changelog = extractChangelog(content, '1.0.0-dev.3', {
-      omitTitle: true,
+      const changelog = extractChangelog(content, '1.0.0-dev.3', {
+        omitTitle: true,
+      });
+
+      expect(changelog).toEqual('Something');
     });
 
-    expect(changelog).toEqual('Something');
+    it('should return changes from corresponding release version when prefixed prerelease cannot be found', () => {
+      const content = [
+        '# Changelog',
+        '',
+        'All notable changes.',
+        '',
+        '## 1.0.0 2022-01-01',
+        '',
+        'Something',
+      ].join('\n');
+
+      const changelog = extractChangelog(content, 'v1.0.0-dev.3', {
+        omitTitle: true,
+      });
+
+      expect(changelog).toEqual('Something');
+    });
+
+    it('should return changes from prerelease version', () => {
+      const content = [
+        '# Changelog',
+        '',
+        'All notable changes.',
+        '',
+        '## 1.0.0 2022-01-02',
+        '',
+        'Something final',
+        '',
+        '## 1.0.0-rc.1 2022-01-01',
+        '',
+        'Something in progress',
+      ].join('\n');
+
+      const changelog = extractChangelog(content, '1.0.0-rc.1', {
+        omitTitle: true,
+      });
+
+      expect(changelog).toEqual('Something in progress');
+    });
+
+    it('should return changes from prefixed prerelease version', () => {
+      const content = [
+        '# Changelog',
+        '',
+        'All notable changes.',
+        '',
+        '## 1.0.0 2022-01-02',
+        '',
+        'Something final',
+        '',
+        '## 1.0.0-rc.1 2022-01-01',
+        '',
+        'Something in progress',
+      ].join('\n');
+
+      const changelog = extractChangelog(content, 'v1.0.0-rc.1', {
+        omitTitle: true,
+      });
+
+      expect(changelog).toEqual('Something in progress');
+    });
   });
 });

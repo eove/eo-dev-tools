@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- something
+- something in 2.1.2
 
 ## 2.1.1 - 2022-01-03
 
@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - something in 2.0.0
+
+## 2.0.0-rc.1 - 2022-01-02
+
+### Added
+
+- something in 2.0.0-rc1
 
 ## 1.0.0 - 2022-01-01
 
