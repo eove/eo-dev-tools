@@ -1,6 +1,6 @@
 import { CommandModule } from 'yargs';
 
-import { createLogger } from '../../tools';
+import { createConsoleStandardStreams, createLogger } from '../../tools';
 import { createChangelog, ChangelogOptions } from '../../commands';
 import { GlobalOptions } from './types';
 
@@ -31,7 +31,10 @@ export const changelog: CommandModule<any, Options> = {
   },
   handler: (argv) => {
     const logger = createLogger({ level: argv.logLevel });
-    const command = createChangelog({ logger, console });
+    const command = createChangelog({
+      logger,
+      standardStreams: createConsoleStandardStreams(),
+    });
     return command(argv);
   },
 };

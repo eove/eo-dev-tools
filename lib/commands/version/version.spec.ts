@@ -1,18 +1,18 @@
 import { join as joinPath } from 'path';
 
-import { Console } from '../../tools';
+import { StandardStreams } from '../../tools';
 import { createSilentLogger } from '../../tests';
 import { VersionOptions, createVersion } from './version';
 
 describe('Version', () => {
-  let console: Console;
+  let standardStreams: StandardStreams;
   let logger;
   let command: (options: VersionOptions) => Promise<void>;
 
   beforeEach(() => {
     logger = createSilentLogger();
-    console = { log: jest.fn() };
-    command = createVersion({ logger, console });
+    standardStreams = { output: jest.fn() };
+    command = createVersion({ logger, standardStreams: standardStreams });
   });
 
   describe('when project is managed by lerna', () => {
@@ -20,7 +20,7 @@ describe('Version', () => {
       await command({ rootDirectory: joinPath(__dirname, 'tests', 'lerna') });
 
       const expected = ['package-a: 1.0.1', 'package-b: 1.0.2'].join('\n');
-      expect(console.log).toHaveBeenCalledWith(expected);
+      expect(standardStreams.output).toHaveBeenCalledWith(expected);
     });
 
     it('should find all packages based on lerna configuration', async () => {
@@ -33,7 +33,7 @@ describe('Version', () => {
         'package-b: 1.0.2',
         'package-c: 1.0.3',
       ].join('\n');
-      expect(console.log).toHaveBeenCalledWith(expected);
+      expect(standardStreams.output).toHaveBeenCalledWith(expected);
     });
 
     it('should find all packages without duplicates based on lerna configuration', async () => {
@@ -41,7 +41,7 @@ describe('Version', () => {
         rootDirectory: joinPath(__dirname, 'tests', 'lerna-dup'),
       });
 
-      expect(console.log).toHaveBeenCalledWith('package: 1.0.1');
+      expect(standardStreams.output).toHaveBeenCalledWith('package: 1.0.1');
     });
 
     it('should omit non-npm package', async () => {
@@ -49,7 +49,7 @@ describe('Version', () => {
         rootDirectory: joinPath(__dirname, 'tests', 'lerna-mixed'),
       });
 
-      expect(console.log).toHaveBeenCalledWith('package-a: 1.0.1');
+      expect(standardStreams.output).toHaveBeenCalledWith('package-a: 1.0.1');
     });
   });
 
@@ -57,7 +57,7 @@ describe('Version', () => {
     it('should print version for it', async () => {
       await command({ rootDirectory: joinPath(__dirname, 'tests', 'npm') });
 
-      expect(console.log).toHaveBeenCalledWith('package: 1.0.0');
+      expect(standardStreams.output).toHaveBeenCalledWith('package: 1.0.0');
     });
   });
 });

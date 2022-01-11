@@ -1,12 +1,12 @@
 import { Logger } from '@arpinum/log';
 import { access, readFile } from 'fs/promises';
 
-import { Console } from '../../tools';
+import { StandardStreams } from '../../tools';
 import { extractChangelog } from './changelogParser';
 
 interface Creation {
   logger: Logger;
-  console: Console;
+  standardStreams: StandardStreams;
 }
 
 export interface ChangelogOptions {
@@ -18,14 +18,14 @@ export interface ChangelogOptions {
 export function createChangelog(
   creation: Creation
 ): (options: ChangelogOptions) => Promise<void> {
-  const { logger, console } = creation;
+  const { logger, standardStreams } = creation;
   return async (options: ChangelogOptions) => {
     const { file: filePath, changesVersion: version, omitTitle } = options;
     logger.debug(`Extracting version ${version} changelog from ${filePath}`);
     await ensureChangelogExists(filePath);
     const content = await readFile(filePath, { encoding: 'utf8' });
     const result = extractChangelog(content, version, { omitTitle });
-    console.log(result);
+    standardStreams.output(result);
   };
 }
 

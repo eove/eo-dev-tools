@@ -4,13 +4,13 @@ import { access, readFile } from 'fs/promises';
 import { promisify } from 'util';
 import { join as joinPath } from 'path';
 
-import { Console } from '../../tools';
+import { StandardStreams } from '../../tools';
 
 const globAsync = promisify(glob);
 
 interface Creation {
   logger: Logger;
-  console: Console;
+  standardStreams: StandardStreams;
 }
 
 export interface VersionOptions {
@@ -34,7 +34,7 @@ interface LernaJson {
 export function createVersion(
   creation: Creation
 ): (options: VersionOptions) => Promise<void> {
-  const { logger, console } = creation;
+  const { logger, standardStreams } = creation;
   return async (options: VersionOptions) => {
     const { rootDirectory } = options;
     logger.debug(`Printing version from ${rootDirectory}`);
@@ -70,7 +70,7 @@ export function createVersion(
     );
     const { packages } = JSON.parse(lernaConfiguration) as LernaJson;
     const directories = await findDirectories(rootDirectory, packages);
-    console.log(directories);
+    standardStreams.output(directories);
     return findNpmPackages(directories);
   }
 
@@ -134,6 +134,6 @@ export function createVersion(
         return result;
       }, [] as string[])
       .join('\n');
-    console.log(message);
+    standardStreams.output(message);
   }
 }

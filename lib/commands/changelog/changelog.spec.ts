@@ -1,18 +1,18 @@
 import { join as joinPath } from 'path';
 
-import { Console } from '../../tools';
+import { StandardStreams } from '../../tools';
 import { createSilentLogger } from '../../tests';
 import { ChangelogOptions, createChangelog } from './changelog';
 
 describe('Changelog', () => {
-  let console: Console;
+  let standardStreams: StandardStreams;
   let logger;
   let command: (options: ChangelogOptions) => Promise<void>;
 
   beforeEach(() => {
     logger = createSilentLogger();
-    console = { log: jest.fn() };
-    command = createChangelog({ logger, console });
+    standardStreams = { output: jest.fn() };
+    command = createChangelog({ logger, standardStreams: standardStreams });
   });
 
   it('should print the changelog for given version', async () => {
@@ -23,7 +23,7 @@ describe('Changelog', () => {
     });
 
     const expected = ['### Added', '', '- something in 2.0.0'].join('\n');
-    expect(console.log).toHaveBeenCalledWith(expected);
+    expect(standardStreams.output).toHaveBeenCalledWith(expected);
   });
 
   it('should print the changelog with title when needed', async () => {
@@ -40,7 +40,7 @@ describe('Changelog', () => {
       '',
       '- something in 2.0.0',
     ].join('\n');
-    expect(console.log).toHaveBeenCalledWith(expected);
+    expect(standardStreams.output).toHaveBeenCalledWith(expected);
   });
 
   it('should print another the changelog for another given version', async () => {
@@ -51,7 +51,7 @@ describe('Changelog', () => {
     });
 
     const expected = ['### Added', '', '- something in 2.1.1'].join('\n');
-    expect(console.log).toHaveBeenCalledWith(expected);
+    expect(standardStreams.output).toHaveBeenCalledWith(expected);
   });
 
   it('should rejects when file does not exist', async () => {
