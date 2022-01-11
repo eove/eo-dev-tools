@@ -1,0 +1,4 @@
+{
+  "packages": ["first-package/*", "other-packages/*"],
+  "version": "1.0.0"
+}

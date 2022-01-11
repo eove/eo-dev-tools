@@ -1,8 +1,12 @@
+import glob from 'glob';
 import { Logger } from '@arpinum/log';
-import { access, readdir, readFile } from 'fs/promises';
+import { access, readFile } from 'fs/promises';
+import { promisify } from 'util';
 import { join as joinPath } from 'path';
 
 import { Console } from '../../tools';
+
+const globAsync = promisify(glob);
 
 interface Creation {
   logger: Logger;
@@ -16,6 +20,15 @@ export interface VersionOptions {
 interface Package {
   name: string;
   version: string;
+}
+
+interface PackageJson {
+  name: string;
+  version: string;
+}
+
+interface LernaJson {
+  packages: string[];
 }
 
 export function createVersion(
@@ -51,9 +64,29 @@ export function createVersion(
   }
 
   async function findLernaPackages(rootDirectory: string): Promise<Package[]> {
-    const packagesDirectory = joinPath(rootDirectory, 'packages');
-    const directories = await findDirectories(packagesDirectory);
+    const lernaConfiguration = await readFile(
+      joinPath(rootDirectory, 'lerna.json'),
+      { encoding: 'utf8' }
+    );
+    const { packages } = JSON.parse(lernaConfiguration) as LernaJson;
+    const directories = await findDirectories(rootDirectory, packages);
+    console.log(directories);
     return findNpmPackages(directories);
+  }
+
+  async function findDirectories(
+    rootDirectory: string,
+    globs: string[]
+  ): Promise<string[]> {
+    const directories = [];
+    for (const glob of globs) {
+      const currentDirectories = await globAsync(glob, {
+        absolute: true,
+        cwd: rootDirectory,
+      });
+      directories.push(...currentDirectories);
+    }
+    return Array.from(new Set(directories));
   }
 
   async function findNpmPackages(directories: string[]): Promise<Package[]> {
@@ -78,7 +111,7 @@ export function createVersion(
           encoding: 'utf8',
         }
       );
-      const { version, name } = JSON.parse(packageJson) as any;
+      const { version, name } = JSON.parse(packageJson) as PackageJson;
       return { version, name };
     }
     return undefined;
@@ -102,12 +135,5 @@ export function createVersion(
       }, [] as string[])
       .join('\n');
     console.log(message);
-  }
-
-  async function findDirectories(rootDirectory: string): Promise<string[]> {
-    const files = await readdir(rootDirectory, { withFileTypes: true });
-    return files
-      .filter((entry) => entry.isDirectory)
-      .map((entry) => joinPath(rootDirectory, entry.name));
   }
 }
