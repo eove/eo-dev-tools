@@ -70,7 +70,6 @@ export function createVersion(
     );
     const { packages } = JSON.parse(lernaConfiguration) as LernaJson;
     const directories = await findDirectories(rootDirectory, packages);
-    standardStreams.output(directories);
     return findNpmPackages(directories);
   }
 
