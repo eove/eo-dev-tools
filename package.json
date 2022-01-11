@@ -29,7 +29,7 @@
     "url": "https://github.com/eove/eo-dev-tools"
   },
   "dependencies": {
-    "@arpinum/log": "^5.3.3",
+    "@arpinum/log": "5.3.3",
     "yargs": "17.3.1"
   },
   "devDependencies": {

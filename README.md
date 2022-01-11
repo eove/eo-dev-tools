@@ -42,7 +42,8 @@ npx @eove/dev-tools --help
 
 ## Commands
 
-- `changelog`: extracts changes from a changelog file
+- `changelog`: prints changes from a changelog file
+- `version`: prints project version
 
 ## Examples
 

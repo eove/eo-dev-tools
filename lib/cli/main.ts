@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import { Level as LogLevel } from '@arpinum/log';
 
-import { changelog } from './commands';
+import { changelog, version } from './commands';
 
 main().catch((error) => {
   console.error(error);
@@ -11,6 +11,7 @@ main().catch((error) => {
 async function main() {
   yargs
     .command(changelog)
+    .command(version)
     .demandCommand()
     .options({
       logLevel: {

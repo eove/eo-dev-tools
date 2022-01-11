@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `changelog`: by default, version is latest one and `latest` could be used when precise version is not known
+- `version` script to print project version
 
 ### Fixed
 
