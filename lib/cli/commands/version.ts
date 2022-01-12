@@ -17,6 +17,12 @@ export const version: CommandModule<any, Options> = {
         description: 'Project root directory',
         default: process.cwd(),
       },
+      markdown: {
+        alias: 'md',
+        type: 'boolean',
+        description: 'Output will be formatted as markdown',
+        default: false,
+      },
     });
     return yargs;
   },

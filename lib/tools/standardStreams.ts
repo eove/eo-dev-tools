@@ -5,5 +5,7 @@ export interface StandardStreams {
 }
 
 export function createConsoleStandardStreams(): StandardStreams {
-  return { output: console.log.bind(console) };
+  return {
+    output: console.log.bind(console),
+  };
 }

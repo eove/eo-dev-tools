@@ -15,6 +15,7 @@ interface Creation {
 
 export interface VersionOptions {
   rootDirectory: string;
+  markdown: boolean;
 }
 
 interface Package {
@@ -36,10 +37,10 @@ export function createVersion(
 ): (options: VersionOptions) => Promise<void> {
   const { logger, standardStreams } = creation;
   return async (options: VersionOptions) => {
-    const { rootDirectory } = options;
+    const { rootDirectory, markdown } = options;
     logger.debug(`Printing version from ${rootDirectory}`);
     const packages = await findAllPackages(rootDirectory);
-    print(packages);
+    print(packages, markdown);
   };
 
   async function findAllPackages(rootDirectory: string): Promise<Package[]> {
@@ -125,14 +126,40 @@ export function createVersion(
     }
   }
 
-  function print(packages: Package[]): void {
-    const message = packages
+  function print(packages: Package[], markdown: boolean): void {
+    const message = markdown
+      ? createMarkdownMessage(packages)
+      : createPlainMessage(packages);
+    standardStreams.output(message);
+  }
+
+  function createPlainMessage(packages: Package[]): string {
+    if (packages.length === 0) {
+      return 'No version available';
+    }
+    return packages
       .reduce((result, p) => {
         const { name, version } = p;
         result.push(`${name}: ${version}`);
         return result;
       }, [] as string[])
       .join('\n');
-    standardStreams.output(message);
+  }
+
+  function createMarkdownMessage(packages: Package[]): string {
+    if (packages.length === 0) {
+      return ['### Package version', '', 'None available'].join('\n');
+    }
+    const title = packages.length > 1 ? 'Packages versions' : 'Package version';
+    return packages
+      .reduce(
+        (result, p) => {
+          const { name, version } = p;
+          result.push(`- ${name}: ${version}`);
+          return result;
+        },
+        [`### ${title}`, '']
+      )
+      .join('\n');
   }
 }

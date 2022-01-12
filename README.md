@@ -45,9 +45,9 @@ npx @eove/dev-tools --help
 - `changelog`: prints changes from a changelog file
 - `version`: prints project version
 
-## Examples
+## `changelog` command
 
-### Changelog
+### Examples
 
 Extracts the changelog for provided version:
 
@@ -55,13 +55,23 @@ Extracts the changelog for provided version:
 npx @eove/dev-tools changelog --file ./CHANGELOG.md 1.3.4
 ```
 
-## Version detection
+### Version detection
 
 When `latest` is used and changelog is not empty, the first changes will be returned.
 
 When provided version uses a `v` prefix (`v1.2.3`), it will be automatically omitted (`1.2.3` will be used).
 
 When provided version is a prerelease (`1.2.3-dev.1`), this exact version will be looked for, then the release one (`1.2.3`).
+
+## `version` command
+
+### Examples
+
+Extracts the changelog for provided version:
+
+```
+npx @eove/dev-tools version --root ~/sources/myproject
+```
 
 ## License
 

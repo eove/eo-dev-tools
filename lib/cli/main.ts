@@ -22,5 +22,6 @@ async function main() {
       },
     })
     .detectLocale(false)
+    .strict()
     .parse();
 }
