@@ -2,7 +2,6 @@
   "name": "@eove/dev-tools",
   "version": "1.2.0",
   "description": "Collection of development scripts/tools for Eove projects",
-  "main": "index.js",
   "bin": {
     "eo-dev-tools": "./bin/eo-dev-tools.js"
   },
