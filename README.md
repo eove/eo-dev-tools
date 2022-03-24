@@ -67,7 +67,7 @@ When provided version is a prerelease (`1.2.3-dev.1`), this exact version will b
 
 ### Examples
 
-Extracts the changelog for provided version:
+Extracts versions from the found package.json files:
 
 ```
 npx @eove/dev-tools version --root ~/sources/myproject
